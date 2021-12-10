@@ -13,6 +13,8 @@ public class enemy : MonoBehaviour
     public Material defaultMaterial;
     private Rigidbody2D rb;
     public float KnockbackValue;
+    public AudioSource GetHitSound;
+    public GameObject ExplotionPrefab;
 
     void Start()
     {
@@ -27,9 +29,10 @@ public class enemy : MonoBehaviour
 
         if (collision.gameObject.tag == "Bullet")
         {
+            GetHitSound.Play();
             var BulletObj = collision.gameObject.GetComponent<bullet>();
             Health -= BulletObj.damage;
-            Destroy(collision.gameObject);
+            DestroyObject(collision.gameObject);
 
             //knockback                                 v get player position
             Vector2 difference = (transform.position - GameObject.Find("Player").transform.position).normalized * BulletObj.knockbackForce;
@@ -43,6 +46,7 @@ public class enemy : MonoBehaviour
         }
         if (Health<=0)
         {
+            Instantiate(ExplotionPrefab,transform.position, transform.rotation);
             Destroy(gameObject);
         }
     }

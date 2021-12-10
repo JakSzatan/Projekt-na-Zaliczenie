@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Agrro : MonoBehaviour { 
        
-    public Transform target;
+    private Transform target;
     public float speed;
     public float agroRange;
     private bool isAgrro;
@@ -16,6 +16,7 @@ public class Agrro : MonoBehaviour {
     // Start is called before the first frame update
     void Start()
     {
+        target = GameObject.Find("Player").transform;
         enemyscript = GetComponent<enemy>();
         animator = GetComponent<Animator>();
         SR = GetComponent<SpriteRenderer>();
@@ -27,7 +28,7 @@ public class Agrro : MonoBehaviour {
         if (!isAgrro)
         {
             
-            if (Vector3.Distance(transform.position, target.position) < agroRange||enemyscript.Health<10) //Agro range
+            if (Vector3.Distance(transform.position, target.position) < agroRange||enemyscript.Health<5) //Agro range
             {   //move towards the player
                 isAgrro = true;
                 GetComponent<EnemyShoot>().isTrigerred=true;

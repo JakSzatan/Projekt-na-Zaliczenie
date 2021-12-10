@@ -13,7 +13,7 @@ public class PlayerColisions : MonoBehaviour
     public Material flashMaterial;
     public Material defaultMaterial;
     private Rigidbody2D rb;
-    
+    public AudioSource GetHitSound;
 
     private void Start()
     {
@@ -31,12 +31,17 @@ public class PlayerColisions : MonoBehaviour
                 rb.AddForce(difference* KnockbackValue, ForceMode2D.Impulse);
                 StartCoroutine(BecomeTemporarilyInvincible());
                 PlayerStats.Instance.TakeDamage(1);
+                GetHitSound.Play();
             }
         }
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
         if (collision.gameObject.tag == "EnemyBullet")
         {
             if (!isInvincible)
             {
+                GetHitSound.Play();
                 Vector2 difference = (transform.position - collision.gameObject.transform.position).normalized;
                 rb.AddForce(difference * KnockbackValue, ForceMode2D.Impulse);
                 StartCoroutine(BecomeTemporarilyInvincible());
