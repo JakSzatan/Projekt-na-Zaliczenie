@@ -14,11 +14,13 @@ public class PlayerColisions : MonoBehaviour
     public Material defaultMaterial;
     private Rigidbody2D rb;
     public AudioSource GetHitSound;
+    public movment movment;
 
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        movment = GetComponent<movment>();
     }
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -28,7 +30,9 @@ public class PlayerColisions : MonoBehaviour
             {
                 //knockback
                 Vector2 difference = (transform.position - collision.gameObject.transform.position).normalized;
-                rb.AddForce(difference* KnockbackValue, ForceMode2D.Impulse);
+                movment.IsKnockbackActive = true;
+                movment.KnockbackDirection = difference * collision.gameObject.GetComponent<enemy>().KnockbackValue;
+                StartCoroutine(Knockback());
                 StartCoroutine(BecomeTemporarilyInvincible());
                 PlayerStats.Instance.TakeDamage(1);
                 GetHitSound.Play();
@@ -43,7 +47,9 @@ public class PlayerColisions : MonoBehaviour
             {
                 GetHitSound.Play();
                 Vector2 difference = (transform.position - collision.gameObject.transform.position).normalized;
-                rb.AddForce(difference * KnockbackValue, ForceMode2D.Impulse);
+                movment.IsKnockbackActive = true;
+                movment.KnockbackDirection = difference*collision.gameObject.GetComponent<EnemyBullet>().knockbackForce;
+                StartCoroutine(Knockback());
                 StartCoroutine(BecomeTemporarilyInvincible());
                 PlayerStats.Instance.TakeDamage(collision.gameObject.GetComponent<EnemyBullet>().damage);
                 DestroyObject(collision.gameObject);
@@ -55,7 +61,6 @@ public class PlayerColisions : MonoBehaviour
         isInvincible = true;
         StartCoroutine(FlashWhite());
         yield return new WaitForSeconds(invincibilityDurationSeconds);
-
         isInvincible = false;
     }
 
@@ -75,5 +80,10 @@ public class PlayerColisions : MonoBehaviour
         {
             StartCoroutine(FlashWhite());
         }
+    }
+    private IEnumerator Knockback()
+    {
+        yield return new WaitForSeconds(0.3f);
+        movment.IsKnockbackActive = false;
     }
 }

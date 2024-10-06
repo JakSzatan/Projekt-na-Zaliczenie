@@ -15,11 +15,13 @@ public class enemy : MonoBehaviour
     public float KnockbackValue;
     public AudioSource GetHitSound;
     public GameObject ExplotionPrefab;
+    public Agrro agrro;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        agrro = GetComponent<Agrro>();
     }
 
     ///Colision with a bullet
@@ -29,6 +31,9 @@ public class enemy : MonoBehaviour
 
         if (collision.gameObject.tag == "Bullet")
         {
+            if (!agrro.isAgrro){
+                agrro.SetAgrro();
+            }
             GetHitSound.Play();
             var BulletObj = collision.gameObject.GetComponent<bullet>();
             Health -= BulletObj.damage;

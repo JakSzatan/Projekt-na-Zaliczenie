@@ -7,7 +7,7 @@ public class Agrro : MonoBehaviour {
     private Transform target;
     public float speed;
     public float agroRange;
-    private bool isAgrro;
+    public bool isAgrro;
     public GameObject WaringSprite;
     Animator animator;
     SpriteRenderer SR;
@@ -51,5 +51,16 @@ public class Agrro : MonoBehaviour {
             //move
             transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
         }
+    }
+
+    public void SetAgrro()
+    {
+        isAgrro = true;
+        GetComponent<EnemyShoot>().isTrigerred=true;
+        animator.SetFloat("Speed", 1f);
+        //create a waring sprite
+        var sign = Instantiate(WaringSprite, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+        sign.transform.parent = gameObject.transform;
+        Destroy(sign, 1);
     }
 }
